@@ -329,6 +329,73 @@
                 transform: translate(1px, -2px) rotate(-1deg);
             }
         }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 900px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .game-layout {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .payout-table {
+                order: 2;
+                min-width: auto;
+                width: 90%;
+            }
+
+            .slot-machine {
+                order: 1;
+                padding: 15px;
+                gap: 8px;
+            }
+
+            .reel {
+                width: 100px;
+                height: 150px;
+            }
+
+            .symbol {
+                width: 100px;
+                height: 150px;
+                font-size: 3rem;
+            }
+
+            .stat-box {
+                padding: 10px 15px;
+                min-width: 100px;
+            }
+
+            .stat-box .value {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 15px 50px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .reel {
+                width: 80px;
+                height: 120px;
+            }
+
+            .symbol {
+                width: 80px;
+                height: 120px;
+                font-size: 2.5rem;
+            }
+
+            .slot-machine {
+                gap: 5px;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -464,25 +531,23 @@
             'peace': 10, 'shroom': 10,
             'c1': 6, 'c2': 6, 'c3': 6, 'c4': 6, 'c5': 6,
             'wild': 3
-        }; // Total 40 + ~80 > 100ish
+        };
 
         const reelStrip = [];
         Object.keys(weights).forEach(id => {
             const count = weights[id];
-            // Find symbol obj: Note: wild id is 'wild', peace is 'peace' etc
-            // Cat IDs are c1, c2 etc.
-            // Find match in symbols array
             const sym = symbols.find(s => s.id === id);
             if (sym) {
                 for (let i = 0; i < count; i++) reelStrip.push(sym);
             }
         });
 
-        // Debug: Check strip size
-        console.log("Reel Strip Size:", reelStrip.length);
-
-        const REEL_HEIGHT = 260;
         const STRIP_LENGTH = 20;
+
+        function getReelHeight() {
+            const firstReel = document.querySelector('.reel');
+            return firstReel ? firstReel.offsetHeight : 260;
+        }
 
         const reels = [
             document.getElementById('reel1').querySelector('.reel-inner'),
@@ -588,8 +653,9 @@
                 reel.style.transform = 'translateY(0)';
                 reel.offsetHeight;
 
-                const totalH = (len + 1) * REEL_HEIGHT;
-                const targetY = -(totalH - REEL_HEIGHT);
+                const reelHeight = getReelHeight();
+                const totalH = (len + 1) * reelHeight;
+                const targetY = -(totalH - reelHeight);
                 const time = 1.5 + (index * 0.5);
                 reel.style.transition = `transform ${time}s cubic-bezier(0.1, 0.1, 0.1, 1)`;
                 reel.style.transform = `translateY(${targetY}px)`;
