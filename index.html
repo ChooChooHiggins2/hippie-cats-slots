@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hippie Cat Slots ✌️😺</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Lobster&display=swap');
+
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff00;
+            --neon-blue: #00ffff;
+            --psychedelic-bg: #1a0b2e;
+        }
+
+        body {
+            background-color: var(--psychedelic-bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 0, 255, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 255, 0.2) 0%, transparent 20%);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        h1 {
+            font-family: 'Lobster', cursive;
+            font-size: 3.5rem;
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            margin: 0 0 20px 0;
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+                filter: hue-rotate(0deg);
+            }
+
+            to {
+                transform: scale(1.05);
+                filter: hue-rotate(90deg);
+            }
+        }
+
+        /* LAYOUT GRID */
+        .game-layout {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* STATS PANEL */
+        .stats-panel {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--neon-blue);
+            padding: 15px 30px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 140px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .stat-box .label {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .stat-box .value {
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 10px white;
+        }
+
+        /* PAYOUT TABLE */
+        .payout-table {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            min-width: 220px;
+        }
+
+        .payout-table h3 {
+            margin: 0 0 15px 0;
+            text-align: center;
+            color: var(--neon-pink);
+            text-decoration: underline;
+        }
+
+        .payout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payout-row:last-child {
+            border-bottom: none;
+        }
+
+        .payout-row.jackpot {
+            color: var(--neon-green);
+            font-size: 1.1rem;
+        }
+
+        .payout-row .amount {
+            color: #fff;
+            text-shadow: 0 0 5px white;
+        }
+
+        /* SLOT MACHINE */
+        .slot-machine {
+            background: linear-gradient(145deg, #2a1b3d, #1a0b2e);
+            border: 5px solid var(--neon-blue);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 50px rgba(0, 0, 0, 0.8);
+            display: flex;
+            gap: 15px;
+            position: relative;
+        }
+
+        .reel {
+            width: 180px;
+            height: 260px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+            border: 3px solid #333;
+        }
+
+        .reel-inner {
+            display: flex;
+            flex-direction: column;
+            will-change: transform;
+            /* Performance hint */
+        }
+
+        .symbol {
+            width: 180px;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-bottom: 2px solid #ccc;
+            box-sizing: border-box;
+            font-size: 5rem;
+        }
+
+        .symbol img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .symbol.catnip {
+            background-color: #0a2e0a;
+            position: relative;
+            overflow: hidden;
+            font-size: inherit;
+        }
+
+        .symbol.catnip svg {
+            width: 70%;
+            height: 70%;
+            fill: #00ff00;
+            filter: drop-shadow(0 0 10px #00ff00);
+            animation: wiggly 1s ease-in-out infinite alternate;
+            z-index: 2;
+        }
+
+        .symbol.filler {
+            background-color: #f0f0f0;
+            font-size: 6rem;
+            /* Large Emojis */
+        }
+
+        /* Sparkles for Catnip */
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 5px white;
+            animation: float 2s infinite linear;
+        }
+
+        @keyframes wiggly {
+            from {
+                transform: rotate(-10deg);
+            }
+
+            to {
+                transform: rotate(10deg);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        /* CONTROLS */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        button {
+            background: linear-gradient(to bottom, #ff00ff, #cc00cc);
+            border: none;
+            border-radius: 50px;
+            padding: 20px 80px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #990099, 0 15px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.1s;
+        }
+
+        button:active {
+            transform: translateY(8px);
+            box-shadow: 0 0 0 #990099;
+        }
+
+        button:disabled {
+            background: #555;
+            box-shadow: 0 8px 0 #333;
+            color: #888;
+            transform: translateY(8px);
+            cursor: not-allowed;
+        }
+
+        .message-box {
+            font-size: 1.5rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            height: 2rem;
+            text-align: center;
+        }
+
+        .cost-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* WIN ANIMATION */
+        @keyframes bigWinShake {
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Hippie Cat Slots</h1>
+
+    <div class="stats-panel">
+        <div class="stat-box">
+            <div class="label">CREDITS ☮️</div>
+            <div class="value" id="balanceDisplay">1000</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">LAST WIN</div>
+            <div class="value" id="winDisplay">0</div>
+        </div>
+    </div>
+
+    <div class="game-layout">
+
+        <!-- SIDE PANEL: PAYOUTS -->
+        <div class="payout-table">
+            <h3>PAYOUTS</h3>
+            <div class="payout-row jackpot">
+                <span>🌿🌿🌿 (Jackpot)</span>
+                <span class="amount">500</span>
+            </div>
+            <div class="payout-row">
+                <span>Any 3 Match</span>
+                <span class="amount">100</span>
+            </div>
+            <div class="payout-row">
+                <span>🕊️🕊️🕊️ (Peace)</span>
+                <span class="amount">50</span>
+            </div>
+            <div class="payout-row">
+                <span>🍄🍄🍄 (Shroom)</span>
+                <span class="amount">50</span>
+            </div>
+            <div style="margin-top:20px; font-size: 0.8rem; color: #aaa; text-align: center;">
+                Wilds (🌿) match with anything!
+            </div>
+        </div>
+
+        <!-- SLOT MACHINE -->
+        <div class="slot-machine">
+            <div class="reel" id="reel1">
+                <div class="reel-inner"></div>
+            </div>
+            <div class="reel" id="reel2">
+                <div class="reel-inner"></div>
+            </div>
+            <div class="reel" id="reel3">
+                <div class="reel-inner"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <div class="message-box" id="message">PRESS SPIN TO PLAY</div>
+        <button id="spinBtn" onclick="spin()">SPIN</button>
+        <div class="cost-label">COST: 10 CREDITS</div>
+    </div>
+
+    <script>
+        // --- AUDIO ENGINE ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        const playTone = (freq, type, duration, vol = 0.1) => {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        };
+
+        const playSpinSound = () => {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        };
+
+        const playStopSound = () => playTone(150, 'square', 0.1, 0.2);
+
+        const playWinSound = (isJackpot) => {
+            if (isJackpot) {
+                [440, 554, 659, 880, 440, 554, 659, 880].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.2, 0.3), i * 100));
+            } else {
+                playTone(523.25, 'triangle', 0.3, 0.2);
+                setTimeout(() => playTone(659.25, 'triangle', 0.4, 0.2), 150);
+                setTimeout(() => playTone(783.99, 'triangle', 0.6, 0.2), 300);
+            }
+        };
+
+        // --- GAME LOGIC ---
+        let balance = 1000;
+        const SPIN_COST = 10;
+        let isSpinning = false;
+
+        // Symbols Configuration (Updated to PNGs)
+        const symbols = [
+            { type: 'cat', id: 'c1', src: 'assets/cat1.png' },
+            { type: 'cat', id: 'c2', src: 'assets/cat2.png' },
+            { type: 'cat', id: 'c3', src: 'assets/cat3.png' },
+            { type: 'cat', id: 'c4', src: 'assets/cat4.png' },
+            { type: 'cat', id: 'c5', src: 'assets/cat5.png' },
+            { type: 'wild', id: 'wild', src: 'catnip' },
+            { type: 'filler', id: 'peace', src: 'peace', emoji: '✌️' },
+            { type: 'filler', id: 'shroom', src: 'shroom', emoji: '🍄' }
+        ];
+
+        // --- WEIGHTED REELS ---
+        // Fillers (Peace + Shroom) = Common
+        // Cats = Uncommon
+        // Wilds = Rare
+        const weights = {
+            'peace': 10, 'shroom': 10,
+            'c1': 6, 'c2': 6, 'c3': 6, 'c4': 6, 'c5': 6,
+            'wild': 3
+        }; // Total 40 + ~80 > 100ish
+
+        const reelStrip = [];
+        Object.keys(weights).forEach(id => {
+            const count = weights[id];
+            // Find symbol obj: Note: wild id is 'wild', peace is 'peace' etc
+            // Cat IDs are c1, c2 etc.
+            // Find match in symbols array
+            const sym = symbols.find(s => s.id === id);
+            if (sym) {
+                for (let i = 0; i < count; i++) reelStrip.push(sym);
+            }
+        });
+
+        // Debug: Check strip size
+        console.log("Reel Strip Size:", reelStrip.length);
+
+        const REEL_HEIGHT = 260;
+        const STRIP_LENGTH = 20;
+
+        const reels = [
+            document.getElementById('reel1').querySelector('.reel-inner'),
+            document.getElementById('reel2').querySelector('.reel-inner'),
+            document.getElementById('reel3').querySelector('.reel-inner')
+        ];
+        const balanceEl = document.getElementById('balanceDisplay');
+        const winEl = document.getElementById('winDisplay');
+        const msgEl = document.getElementById('message');
+        const spinBtn = document.getElementById('spinBtn');
+
+        const catnipSvg = `
+            <svg viewBox="0 0 24 24">
+                <path d="M17,8C8,10,5.9,16.17,3.82,21.34L5.71,22l1-2.3A4.49,4.49,0,0,0,8,20C19,20,22,3,22,3,21,5,14,5.25,9,6.25S2,11.5,2,13.5a6.22,6.22,0,0,0,1.75,3.75C7,8,17,8,17,8Z"/>
+            </svg>
+            <div class="sparkle" style="top:20%; left:20%; animation-delay:0s;"></div>
+            <div class="sparkle" style="top:50%; left:80%; animation-delay:0.5s;"></div>
+        `;
+
+        function createSymbolElement(sym) {
+            const div = document.createElement('div');
+            if (sym.type === 'wild') div.className = 'symbol catnip';
+            else if (sym.type === 'filler') div.className = 'symbol filler';
+            else div.className = 'symbol';
+
+            if (sym.type === 'wild') {
+                div.innerHTML = catnipSvg;
+            } else if (sym.type === 'filler') {
+                div.innerText = sym.emoji;
+            } else {
+                const img = document.createElement('img');
+                img.src = sym.src;
+                div.appendChild(img);
+            }
+            return div;
+        }
+
+        function init() {
+            reels.forEach(reel => {
+                reel.innerHTML = '';
+                const randomSym = symbols[Math.floor(Math.random() * symbols.length)];
+                reel.appendChild(createSymbolElement(randomSym));
+            });
+            updateUI();
+        }
+
+        function updateUI() {
+            balanceEl.innerText = balance;
+        }
+
+        async function spin() {
+            if (isSpinning) return;
+            // Activate Audio Context on first interaction
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (balance < SPIN_COST) {
+                msgEl.innerText = "OUT OF CREDITS!"; return;
+            }
+
+            // --- AUDIO START ---
+            playSpinSound();
+            // -------------------
+
+            balance -= SPIN_COST;
+            updateUI();
+            winEl.innerText = "0";
+            isSpinning = true;
+            spinBtn.disabled = true;
+            msgEl.innerText = "Cruising...";
+
+            // Determine Result using WEIGHTED STRIP
+            // Each reel picks independently from the weighted strip
+            const results = [
+                reelStrip[Math.floor(Math.random() * reelStrip.length)],
+                reelStrip[Math.floor(Math.random() * reelStrip.length)],
+                reelStrip[Math.floor(Math.random() * reelStrip.length)]
+            ];
+
+            const animations = reels.map((reel, i) => spinReel(reel, results[i], i));
+            await Promise.all(animations);
+
+            checkWin(results);
+
+            isSpinning = false;
+            spinBtn.disabled = false;
+        }
+
+        function spinReel(reel, finalSymbol, index) {
+            return new Promise(resolve => {
+                reel.innerHTML = '';
+                const strip = [];
+                const len = STRIP_LENGTH + (index * 5);
+
+                // We use the weighted strip for visuals so user sees lots of fillers fly by (realistic)
+                for (let i = 0; i < len; i++) {
+                    strip.push(reelStrip[Math.floor(Math.random() * reelStrip.length)]);
+                }
+                strip.push(finalSymbol);
+
+                strip.forEach(s => reel.appendChild(createSymbolElement(s)));
+
+                reel.style.transition = 'none';
+                reel.style.transform = 'translateY(0)';
+                reel.offsetHeight;
+
+                const totalH = (len + 1) * REEL_HEIGHT;
+                const targetY = -(totalH - REEL_HEIGHT);
+                const time = 1.5 + (index * 0.5);
+                reel.style.transition = `transform ${time}s cubic-bezier(0.1, 0.1, 0.1, 1)`;
+                reel.style.transform = `translateY(${targetY}px)`;
+
+                setTimeout(() => {
+                    playStopSound(); // --- AUDIO STOP ---
+                    resolve();
+                }, time * 1000);
+            });
+        }
+
+        function checkWin(res) {
+            const [s1, s2, s3] = res;
+            let win = 0;
+            let text = "Total Bummer...";
+
+            const isWild = (s) => s.type === 'wild';
+            const isFiller = (s) => s.type === 'filler';
+
+            // 1. THREE WILDS
+            if (res.every(isWild)) {
+                win = 500;
+                text = "🦄 JACKPOT! 🦄";
+            }
+            else {
+                // 2. MATCHING 3 (Generic Match Logic)
+                const nonWilds = res.filter(s => !isWild(s));
+
+                if (nonWilds.length === 0) {
+                    // (All wilds handled above)
+                } else {
+                    const targetID = nonWilds[0].id; // Match ANY kind (Cat or Filler)
+                    const isMatch = res.every(s => isWild(s) || s.id === targetID);
+
+                    if (isMatch) {
+                        if (nonWilds[0].type === 'cat') {
+                            win = 100;
+                            text = "CAT MATCH! 😺";
+                        } else {
+                            // Matched Fillers (Peace or Shroom)
+                            win = 50;
+                            text = `Trip out! ${nonWilds[0].emoji}${nonWilds[0].emoji}${nonWilds[0].emoji}`;
+                        }
+                    } else {
+                        // 3. CONSOLATION: 2 Wilds
+                        if (res.filter(isWild).length >= 2) {
+                            win = 20;
+                            text = "2 Wilds! Nice.";
+                        }
+                    }
+                }
+            }
+
+            if (win > 0) {
+                // --- AUDIO WIN ---
+                playWinSound(win >= 500);
+                // -----------------
+
+                balance += win;
+                winEl.innerText = win;
+                msgEl.innerText = text;
+                document.body.style.animation = "bigWinShake 0.5s infinite";
+                setTimeout(() => document.body.style.animation = "", 500);
+            } else {
+                msgEl.innerText = text;
+            }
+
+            updateUI();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
